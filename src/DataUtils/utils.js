@@ -13,6 +13,18 @@ let DataSource = {
             tmp[k].Spent = Math.floor(Math.random() * max);
         })
         return this.clone(tmp);
+    },
+    multi_series: function (max) {
+        let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            tmp = months.map(month => {
+                return {
+                    Month: month,
+                    Budget: Math.floor(Math.random() * max),
+                    Spent: Math.floor(Math.random() * max),
+                    Forecast: Math.floor(Math.random() * max)
+                }
+            });
+        return this.clone(tmp);
     }
 }
 

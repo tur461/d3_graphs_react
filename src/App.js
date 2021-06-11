@@ -5,6 +5,7 @@ import './App.css';
 import LineChart from "./D3components/LineChart"
 import BarChart from "./D3components/BarChart"
 import GroupedBarChart from './D3components/GroupedBarChart';
+import MultiSeriesConnectedScatterPlot from './D3components/MultiSeriesConnectedScatterPlot';
 import HorizontalBar from './D3components/HorizontalBar';
 const datas = [
   [10, 30, 40, 200, 10],
@@ -207,28 +208,13 @@ function App() {
             </div>
             <div className="cost-trend flex-column">
               <h3>Cost Trend</h3>
-              <div className="ci-Line">
-
-                <LineChart data2={[
-                  { name: 'Jan', value: 30 },
-                  { name: 'Feb', value: 10 },
-                  { name: 'Mar', value: 50 },
-                  { name: 'Apr', value: 20 },
-                  { name: 'May', value: 80 },
-                  { name: 'Jun', value: 30 },
-                  { name: 'July', value: 0 },
-                  { name: 'Aug', value: 20 },
-                  { name: 'Sep', value: 100 },
-                  { name: 'Oct', value: 55 },
-                  { name: 'Nov', value: 60 },
-                  { name: 'Dec', value: 80 },
-
-                ]} Pwidth={600} height={80} color={50} dotColor="#7972CD" />
+              <div className="mscsp">
+                <MultiSeriesConnectedScatterPlot width={300} space={55} height={200} margin={{ t: 30, l: 30, b: 30, r: 30 }} />
               </div>
               <div className="h-indicators">
-                <div className="flex ai-center" style={{ marginRight: "17px", marginLeft: "20px" }} ><div className="circle" style={{ backgroundColor: "#92D4DC" }}></div>Budget</div>
-                <div className="flex ai-center" style={{ marginRight: "17px" }} ><div className="circle" style={{ backgroundColor: "#00A9E0" }}></div>Spent</div>
-                <div className="flex ai-center" style={{ marginRight: "17px" }} ><div className="circle" style={{ backgroundColor: "#005B9F" }}></div>Forecast</div>
+                <div className="flex ai-center" style={{ marginRight: "17px", marginLeft: "20px" }} ><div className="circle" style={{ backgroundColor: "#0059A1" }}></div>Budget</div>
+                <div className="flex ai-center" style={{ marginRight: "17px" }} ><div className="circle" style={{ backgroundColor: "#796FD0" }}></div>Spent</div>
+                <div className="flex ai-center" style={{ marginRight: "17px" }} ><div className="circle" style={{ backgroundColor: "#8ED4DE" }}></div>Forecast</div>
               </div>
 
               <hr className="hr" />

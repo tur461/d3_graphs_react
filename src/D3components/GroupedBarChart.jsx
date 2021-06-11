@@ -30,7 +30,9 @@ function updateAndDraw(op) {
         scale_y = null,
         x_axis = null,
         y_axis = null,
-        color = null;
+        color = null,
+        group_spacing = .35,
+        bar_spacing = .35;
 
     // prepare data
     group_names = Object.keys(data);
@@ -45,13 +47,13 @@ function updateAndDraw(op) {
     scaleX_grp_based = d3.scaleBand()
         .domain(group_names)
         .range([0, op.width])
-        .padding([0.2]);
+        .padding([group_spacing]);
 
     // Another scale for bar (subgroup) positioning per group on x axis
     scaleX_sgrp_based = d3.scaleBand()
         .domain(subgroup_names)
         .range([0, scaleX_grp_based.bandwidth()])
-        .padding([0.05]);
+        .padding([bar_spacing]);
 
     // scale for y axis
     scale_y = d3.scaleLinear()
@@ -81,8 +83,7 @@ function updateAndDraw(op) {
     svg.append("g")
         .selectAll("g")
         .data(group_names)
-        .enter()
-        .append("g")
+        .join("g")
         .attr("transform", grp_name => "translate(" + scaleX_grp_based(grp_name) + ",0)")
         .selectAll("rect")
         // inside each group create bars for subgroups
@@ -92,7 +93,7 @@ function updateAndDraw(op) {
                 val: data[grp_name][sg_name]
             };
         })) // e.g., [{key: 'Budget', value: 30}, {key: 'Spent', value: 40}]
-        .enter().append("rect")
+        .join("rect")
         .attr("x", d => scaleX_sgrp_based(d.key))
         .attr("y", d => scale_y(d.val))
         .attr("width", scaleX_sgrp_based.bandwidth())
