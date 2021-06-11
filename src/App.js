@@ -194,7 +194,7 @@ function App() {
               <h3>Current Expenses</h3>
               <div className="flex ai-center" style={{ height: "193px" }}>
 
-                <GroupedBarChart width={200} space={55} height={120} />
+                <GroupedBarChart width={300} space={55} height={200} margin={{ t: 30, l: 30, b: 30, r: 30 }} />
 
 
               </div>

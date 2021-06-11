@@ -4,59 +4,65 @@ import * as d3 from 'd3';
 import { DataSource } from '../DataUtils/utils';
 let max = 100;
 
-export default function GroupedBarChart({ width, height }) {
+export default function GroupedBarChart({ width, height, margin }) {
     const svg_ref = useRef();
     const data = DataSource.grouped(max);
-    console.log('data from GroupedBarChart:', data);
-    useEffect(() => {
-        updateAndDraw({
-            data: data,
-            svg_ref: svg_ref,
-            width: width,
-            height: height
-        });
-    }, []);
+
+    useEffect(_ => updateAndDraw({ data, svg_ref, width, height, margin }), []);
 
     return (
         <div className="chart">
             <svg ref={svg_ref}></svg>
         </div>
-
     )
 }
 
 function updateAndDraw(op) {
-    let group_names = [],
+    let margin = op.margin,
+        data = op.data,
+        group_names = [],
         subgroup_names = [],
         svg = null,
-        scale_group_x = null,
-        scale_subgroup_x = null,
+        width = op.width - margin.l - margin.r,
+        height = op.height - margin.l - margin.r,
+        scaleX_grp_based = null,
+        scaleX_sgrp_based = null,
         scale_y = null,
         x_axis = null,
         y_axis = null,
         color = null;
 
     // prepare data
-    group_names = Object.keys(op.data);
-    subgroup_names = group_names.length ? Object.keys(op.data[group_names[0]]) : [];
+    group_names = Object.keys(data);
+    subgroup_names = group_names.length ? Object.keys(data[group_names[0]]) : [];
 
+    // get svg selection
+    svg = d3.select(op.svg_ref.current)
+        .attr('width', width + margin.l + margin.r)
+        .attr('height', height + margin.t + margin.b);
 
-
-    // console.log('data:', op.data, 'groups:', groups, 'sub-groups:', subgroups);
-
-    scale_group_x = d3.scaleBand()
+    // scale for groups positioning on x axis
+    scaleX_grp_based = d3.scaleBand()
         .domain(group_names)
         .range([0, op.width])
         .padding([0.2]);
 
+    // Another scale for bar (subgroup) positioning per group on x axis
+    scaleX_sgrp_based = d3.scaleBand()
+        .domain(subgroup_names)
+        .range([0, scaleX_grp_based.bandwidth()])
+        .padding([0.05]);
+
+    // scale for y axis
     scale_y = d3.scaleLinear()
-        .domain([0, max])
+        .domain([0, max])       // global variable (on top)
         .range([op.height, 0]);
 
-    x_axis = d3.axisBottom(scale_group_x).tickSize(0);
-    y_axis = d3.axisLeft(scale_y);
+    // x-axis
+    x_axis = d3.axisBottom(scaleX_grp_based).tickSize(0);
 
-    svg = d3.select(op.svg_ref.current)
+    // y-axis
+    y_axis = d3.axisLeft(scale_y);
 
     // add x-axis
     svg.append("g")
@@ -65,12 +71,6 @@ function updateAndDraw(op) {
 
     // add y-axis
     svg.append("g").call(y_axis);
-
-    // Another scale for subgroup position?
-    scale_subgroup_x = d3.scaleBand()
-        .domain(subgroup_names)
-        .range([0, scale_group_x.bandwidth()])
-        .padding([0.05])
 
     // one color per subgroup
     color = d3.scaleOrdinal()
@@ -83,19 +83,19 @@ function updateAndDraw(op) {
         .data(group_names)
         .enter()
         .append("g")
-        .attr("transform", grp_name => "translate(" + scale_group_x(grp_name) + ",0)")
+        .attr("transform", grp_name => "translate(" + scaleX_grp_based(grp_name) + ",0)")
         .selectAll("rect")
         // inside each group create bars for subgroups
         .data(grp_name => subgroup_names.map(sg_name => {
             return {
                 key: sg_name,
-                val: op.data[grp_name][sg_name]
+                val: data[grp_name][sg_name]
             };
         })) // e.g., [{key: 'Budget', value: 30}, {key: 'Spent', value: 40}]
         .enter().append("rect")
-        .attr("x", d => scale_subgroup_x(d.key))
+        .attr("x", d => scaleX_sgrp_based(d.key))
         .attr("y", d => scale_y(d.val))
-        .attr("width", scale_subgroup_x.bandwidth())
+        .attr("width", scaleX_sgrp_based.bandwidth())
         .attr("height", d => op.height - scale_y(d.val))
         .attr("fill", d => color(d.key));
 }
