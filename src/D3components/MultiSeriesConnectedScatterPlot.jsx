@@ -33,7 +33,7 @@ function updateAndDraw(op) {
         color = null,
         line = null,
         vertical_line = null,
-        onMouseMove = (e, d) => vertical_line.style('display', null).style("left", `${d3.pointer(e)[0]}px`),
+        onMouseMove = (e, d) => vertical_line.style('display', null).style("left", `${scaleX(d.Month)}px`),
         onMouseLeave = (e, d) => vertical_line.style('display', 'none');
 
     // prepare data
