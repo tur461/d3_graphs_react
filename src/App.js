@@ -208,7 +208,7 @@ function App() {
             </div>
             <div className="cost-trend flex-column">
               <h3>Cost Trend</h3>
-              <div className="mscsp">
+              <div className="mscsp--div--outer">
                 <MultiSeriesConnectedScatterPlot width={300} space={55} height={200} margin={{ t: 30, l: 30, b: 30, r: 30 }} />
               </div>
               <div className="h-indicators">

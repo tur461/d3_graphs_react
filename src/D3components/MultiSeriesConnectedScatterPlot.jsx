@@ -11,7 +11,7 @@ export default function MultiSeriesConnectedScatterPlot({ width, height, margin 
     useEffect(_ => updateAndDraw({ data, svg_ref, width, height, margin }), []);
 
     return (
-        <div className="chart">
+        <div className="chart mscsp">
             <svg ref={svg_ref}></svg>
         </div>
     )
@@ -31,7 +31,10 @@ function updateAndDraw(op) {
         x_axis = null,
         y_axis = null,
         color = null,
-        line = null;
+        line = null,
+        vertical_line = null,
+        onMouseMove = (e, d) => vertical_line.style('display', null).style("left", `${d3.pointer(e)[0]}px`),
+        onMouseLeave = (e, d) => vertical_line.style('display', 'none');
 
     // prepare data
     xvals = data.map(d => d.Month);
@@ -56,7 +59,8 @@ function updateAndDraw(op) {
     // get svg selection
     svg = d3.select(op.svg_ref.current)
         .attr('width', width + margin.l + margin.r)
-        .attr('height', height + margin.t + margin.b);
+        .attr('height', height + margin.t + margin.b)
+        .style('position', 'relative');
 
     // scale for positioning on x axis
     scaleX = d3.scalePoint()
@@ -115,6 +119,22 @@ function updateAndDraw(op) {
         .join("circle")
         .attr("cx", d => scaleX(d.Month))
         .attr("cy", d => scaleY(d.val))
-        .attr("r", 6)
-        .attr("stroke", "white");
+        .attr("r", 8)
+        .attr("stroke", "white")
+        .on("mousemove", onMouseMove)
+        .on("mouseover", onMouseMove)
+        .on("mouseleave", onMouseLeave);
+
+    vertical_line = d3.select('.chart.mscsp')
+        .append("div")
+        .attr("class", "remove")
+        .style("position", "absolute")
+        .style("z-index", "19")
+        .style("width", "1px")
+        .style("height", op.height)
+        .style("top", "1px")
+        .style("bottom", "1px")
+        .style("left", "0px")
+        .style('display', 'none')
+        .style("background", "#ccc");
 }

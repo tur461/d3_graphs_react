@@ -263,8 +263,12 @@ svg {
   stroke-dasharray: 3,3; 
 }
 
-.mscsp {
+.mscsp--div--outer {
   margin-left: 2rem;
+}
+
+.mscsp {
+  position: relative;
 }
 
 @keyframes App-logo-spin {
