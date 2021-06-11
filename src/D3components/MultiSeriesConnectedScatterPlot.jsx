@@ -45,9 +45,7 @@ function updateAndDraw(op) {
         };
     });
 
-    let budget = _data.filter(d => d.name === subgroup_names[0]);
     let spent = _data.filter(d => d.name === subgroup_names[1]);
-    let forecast = _data.filter(d => d.name === subgroup_names[2]);
     let data_without_forecast = _data.filter(d => d.name !== subgroup_names[2]);
 
 
@@ -70,9 +68,6 @@ function updateAndDraw(op) {
     scaleY = d3.scaleLinear()
         .domain([0, max])       // global variable (on top)
         .range([op.height, 0]);
-
-    let xscales = xvals.map(x => scaleX(x));
-    console.log('xscales:', xscales);
 
     // x-axis
     x_axis = d3.axisBottom(scaleX).tickSize(0);
